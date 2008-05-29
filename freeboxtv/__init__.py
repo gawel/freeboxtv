@@ -12,11 +12,12 @@ TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
 PID = os.path.join(tempfile.gettempdir(), 'fbxtv.pid')
 
 def close():
-    pid = open(PID).read()
-    try:
-        os.kill(int(pid), signal.SIGKILL)
-    except OSError:
-        pass
+    if os.path.isfile(PID):
+        pid = open(PID).read()
+        try:
+            os.kill(int(pid), signal.SIGKILL)
+        except OSError:
+            pass
 
 def open_url(url, fullscreen=False, **options):
     close()
@@ -69,7 +70,6 @@ def main():
         for k in sorted(channels):
             v = channels.get(k)
             print '%s: %s' % (k, v.get('name'))
-            print v.get('raw')
     elif not args:
         default(**eval(str(options)))
     else:
