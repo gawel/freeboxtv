@@ -1,0 +1,32 @@
+from setuptools import setup, find_packages
+import sys, os
+
+version = '0.1'
+
+setup(name='freeboxtv',
+      version=version,
+      description="VLC launcher for freebox tv",
+      long_description=open('README.txt').read(),
+      classifiers=[
+          'Environment :: Console',
+          'License :: OSI Approved :: GNU General Public License (GPL)'
+          'Operating System :: POSIX',
+          'Topic :: Home Automation',
+      ],
+      keywords='',
+      author='Gael Pasgrimaud',
+      author_email='gael@gawel.org',
+      url='http://www.gawel.org',
+      license='GPL',
+      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      include_package_data=True,
+      zip_safe=True,
+      install_requires=[
+          # -*- Extra requirements: -*-
+      ],
+      entry_points="""
+      # -*- Entry points: -*-
+      [console_scripts]
+      fbxtv = freeboxtv:main
+      """,
+      )
