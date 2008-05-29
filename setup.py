@@ -9,7 +9,7 @@ setup(name='freeboxtv',
       long_description=open('README.txt').read(),
       classifiers=[
           'Environment :: Console',
-          'License :: OSI Approved :: GNU General Public License (GPL)'
+          'License :: OSI Approved'
           'Operating System :: POSIX',
           'Topic :: Home Automation',
       ],
