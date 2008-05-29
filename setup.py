@@ -5,7 +5,7 @@ version = '0.1'
 
 setup(name='freeboxtv',
       version=version,
-      description="VLC launcher for freebox tv",
+      description="VLC launcher for Freebox TV",
       long_description=open('README.txt').read(),
       classifiers=[
           'Environment :: Console',
@@ -13,7 +13,7 @@ setup(name='freeboxtv',
           'Operating System :: POSIX',
           'Topic :: Home Automation',
       ],
-      keywords='',
+      keywords='freebox',
       author='Gael Pasgrimaud',
       author_email='gael@gawel.org',
       url='http://www.gawel.org',
