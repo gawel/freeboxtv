@@ -57,7 +57,7 @@ def main():
     parser.add_option("-l", "--list", dest="list",
                             action='store_true',
                             default=False,
-                            help="full screen mode")
+                            help="list channels")
     parser.add_option("-s", "--stop", dest="stop",
                             action='store_true',
                             default=False,
