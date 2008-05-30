@@ -26,7 +26,7 @@ For example::
 
 Close vlc::
 
-  $ fbxtv -c
+  $ fbxtv -s
 
 Note for Mac OSX
 ----------------
