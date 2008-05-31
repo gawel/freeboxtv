@@ -1,0 +1,6 @@
+trunk (2008-05-29)
+==================
+
+  - small fixes. update docs
+    [gawel]
+
