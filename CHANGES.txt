@@ -1,5 +1,10 @@
-trunk (2008-05-29)
+trunk (2008-05-31)
 ==================
+
+  - xxx [Ingeniweb]
+
+0.2 (2008-05-31)
+================
 
   - small fixes. update docs
     [gawel]
