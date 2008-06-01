@@ -1,5 +1,10 @@
-trunk (2008-05-31)
+trunk (2008-06-01)
 ==================
+
+  - xxx [gawel]
+
+0.3 (2008-06-01)
+================
 
   - add --m3u-extvlcopt to the default command line options
 
