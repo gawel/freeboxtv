@@ -1,11 +1,12 @@
 trunk (2008-05-31)
 ==================
 
-  - xxx [Ingeniweb]
+  - add --m3u-extvlcopt to the default command line options
+
+  - use the VLC binary under Mac OSX
 
 0.2 (2008-05-31)
 ================
 
   - small fixes. update docs
-    [gawel]
 

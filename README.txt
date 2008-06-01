@@ -6,13 +6,30 @@ This package is used to wrap vlc_ and use it with the FreeboxTV_.
 .. _vlc: http://www.videolan.org/vlc/
 .. _FreeboxTV: http://adsl.free.fr/tv/multiposte/
 
-Installation with easy_install::
+.. contents::
 
-  $ easy_install -U freeboxtv
+Requirements
+------------
+
+You need vlc_ >= 0.8.6f
+
+Installation
+------------
+
+Install freeboxtv with easy_install::
+
+  $ sudo easy_install -U freeboxtv
+
+Usage
+-----
 
 Get channels list::
 
   $ fbxtv -l
+
+Launch the full playlist::
+
+  $ fbxtv
 
 Launch a channel::
 
@@ -28,16 +45,6 @@ Close vlc::
 
   $ fbxtv -s
 
-Note for Mac OSX
-----------------
-
-You need this on Mac OSX::
-
-  cat > vlc << EOF
-  #!/bin/bash
-  exec /Applications/VLC.app/Contents/MacOS/VLC "\$@"
-  EOF
-  sudo chown root:wheel vlc
-  sudo chmod +x vlc
-  sudo mv vlc /usr/bin/vlc
+Changes
+-------
 

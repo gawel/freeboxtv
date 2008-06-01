@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 from optparse import OptionParser
-from subprocess import Popen
+import subprocess
 import tempfile
+import logging
 import urllib
 import signal
 import sys
 import os
 
+if sys.platform == 'darwin':
+    COMMAND_LINE = ['/Applications/VLC.app/Contents/MacOS/VLC',
+                    '--m3u-extvlcopt']
+else:
+    COMMAND_LINE = ['vlc', '--m3u-extvlcopt']
 PLAYLIST = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
 PID = os.path.join(tempfile.gettempdir(), 'fbxtv.pid')
@@ -21,9 +27,15 @@ def close():
 
 def open_url(url, fullscreen=False, **options):
     close()
-    pid = Popen(['vlc', fullscreen and '-f' or '', url],
-                stderr = open('/dev/null', 'w')).pid
-    open(PID, 'wb').write(str(pid))
+    cmd = COMMAND_LINE + [fullscreen and '-f' or '', url]
+    logging.debug('Options: %s', options)
+    logging.debug('Cmd: %s', ' '.join(cmd))
+    if options.get('debug') == True:
+        subprocess.call(cmd)
+    else:
+        stderr = open('/dev/null', 'w')
+        pid = subprocess.Popen(cmd, stderr=stderr).pid
+        open(PID, 'wb').write(str(pid))
 
 def default(**options):
     open_url(PLAYLIST, **options)
@@ -62,7 +74,14 @@ def main():
                             action='store_true',
                             default=False,
                             help="stop vlc")
+    parser.add_option("-d", "--debug", dest="debug",
+                            action='store_true',
+                            default=False,
+                            help="debug mode")
     options, args = parser.parse_args()
+    if options.debug:
+        logging.basicConfig(level=logging.DEBUG)
+        logging.debug('Starting in debug mode')
     if options.stop:
         close()
     elif options.list:

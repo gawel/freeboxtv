@@ -6,7 +6,7 @@ version = '0.2'
 setup(name='freeboxtv',
       version=version,
       description="VLC launcher for Freebox TV",
-      long_description=open('README.txt').read(),
+      long_description=open('README.txt').read() + open('CHANGES.txt').read(),
       classifiers=[
           'Environment :: Console',
           'License :: OSI Approved',
