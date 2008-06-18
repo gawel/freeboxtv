@@ -28,8 +28,9 @@ def close():
 def open_url(url, fullscreen=False, **options):
     close()
     cmd = COMMAND_LINE + [fullscreen and '-f' or '', url]
-    logging.debug('Options: %s', options)
-    logging.debug('Cmd: %s', ' '.join(cmd))
+    cmd = [a for a in cmd if a]
+    logging.debug('Options: %r', options)
+    logging.debug('Cmd: %r', cmd)
     if options.get('debug') == True:
         subprocess.call(cmd)
     else:

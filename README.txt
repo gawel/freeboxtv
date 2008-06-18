@@ -1,6 +1,3 @@
-Freebox TV
-==========
-
 This package is used to wrap vlc_ and use it with the FreeboxTV_.
 
 .. _vlc: http://www.videolan.org/vlc/
