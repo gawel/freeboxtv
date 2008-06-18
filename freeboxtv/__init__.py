@@ -42,7 +42,7 @@ def default(**options):
     open_url(PLAYLIST, **options)
 
 def get_channels():
-    page = urllib.urlopen('http://mafreebox.freebox.fr/freeboxtv/playlist.m3u')
+    page = urllib.urlopen(PLAYLIST)
     channels = dict()
     data = []
     raw = ''
