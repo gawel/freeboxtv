@@ -1,7 +1,7 @@
 trunk (2008-06-01)
 ==================
 
-  - xxx [gawel]
+  - bug fix when not in fullscreen mode
 
 0.3 (2008-06-01)
 ================
