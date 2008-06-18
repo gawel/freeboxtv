@@ -1,5 +1,10 @@
-trunk (2008-06-01)
+trunk (2008-06-18)
 ==================
+
+  - xxx [Ingeniweb]
+
+0.4 (2008-06-18)
+================
 
   - bug fix when not in fullscreen mode
 
