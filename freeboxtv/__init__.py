@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from ConfigParser import ConfigParser
 from optparse import OptionParser
 import subprocess
 import tempfile
@@ -7,6 +8,9 @@ import urllib
 import signal
 import sys
 import os
+
+FAVORITES = ConfigParser()
+FAVORITES.read(os.path.join(os.path.dirname(__file__), 'favorites.cfg'))
 
 if sys.platform == 'darwin':
     COMMAND_LINE = ['/Applications/VLC.app/Contents/MacOS/VLC',
@@ -59,6 +63,10 @@ def get_channels():
             data['raw'] = raw
             index += 1
             raw = ''
+    for k, v in FAVORITES.items('radios'):
+        data = dict(name=k, url=v, raw='%s\n' % v)
+        channels[index] = data
+        index += 1
     return channels
 
 def main():
