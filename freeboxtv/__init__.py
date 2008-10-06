@@ -111,7 +111,7 @@ def main():
             arg = arg.lower()
             for k, v in channels.items():
                 name = v.get('name').lower()
-                if arg in name:
+                if name.startswith(arg):
                     open(TMP_PLAYLIST, 'w').write(
                         channels.get(k).get('raw'))
                     open_url(TMP_PLAYLIST,**eval(str(options)))
