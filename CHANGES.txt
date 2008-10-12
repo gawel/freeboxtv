@@ -1,22 +1,23 @@
-0.5
-===
+0.5 (2008-10-12)
+================
 
-  - assume that channel name starts with arg
+- Assume that channel name starts with command line argument. Allow to start
+  Nova again.
 
 0.4 (2008-06-18)
 ================
 
-  - bug fix when not in fullscreen mode
+- Bug fix when not in full screen mode
 
 0.3 (2008-06-01)
 ================
 
-  - add --m3u-extvlcopt to the default command line options
+- Add --m3u-extvlcopt to the default command line options
 
-  - use the VLC binary under Mac OSX
+- Use the VLC binary under Mac OSX
 
 0.2 (2008-05-31)
 ================
 
-  - small fixes. update docs
+- Small fixes. Update docs
 
