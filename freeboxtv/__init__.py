@@ -9,14 +9,32 @@ import signal
 import sys
 import os
 
-FAVORITES = ConfigParser()
-FAVORITES.read(os.path.join(os.path.dirname(__file__), 'favorites.cfg'))
+
+def load_config():
+    files = []
+
+    options = os.path.expanduser('~/.freeboxtv')
+    if os.path.isfile(options):
+        files.append(options)
+    files.append(os.path.join(os.path.dirname(__file__), 'favorites.cfg'))
+
+    parser = ConfigParser()
+    parser.read(files)
+    return parser
+
+CONFIG = load_config()
+
+OPTIONS = []
+if CONFIG.has_option('default', 'options'):
+    OPTIONS = CONFIG.get('default', 'options')
+    OPTIONS = [o.strip() for o in OPTIONS.split(' ')]
 
 if sys.platform == 'darwin':
-    COMMAND_LINE = ['/Applications/VLC.app/Contents/MacOS/VLC',
-                    '--m3u-extvlcopt']
+    COMMAND_LINE = ['/Applications/VLC.app/Contents/MacOS/VLC']
 else:
-    COMMAND_LINE = ['vlc', '--m3u-extvlcopt']
+    COMMAND_LINE = ['vlc']
+COMMAND_LINE.extend(OPTIONS)
+
 PLAYLIST = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
 PID = os.path.join(tempfile.gettempdir(), 'fbxtv.pid')
@@ -63,7 +81,7 @@ def get_channels():
             data['raw'] = raw
             index += 1
             raw = ''
-    for k, v in FAVORITES.items('radios'):
+    for k, v in CONFIG.items('radios'):
         data = dict(name=k, url=v, raw='%s\n' % v)
         channels[index] = data
         index += 1

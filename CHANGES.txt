@@ -1,6 +1,7 @@
-0.6
-===
+0.6 (2008-11-31)
+================
 
+- use config file to pass extra options like `--m3u-extvlcopt` to command line.
 
 0.5 (2008-10-12)
 ================

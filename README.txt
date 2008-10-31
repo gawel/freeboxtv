@@ -17,6 +17,16 @@ Install freeboxtv with easy_install::
 
   $ sudo easy_install -U freeboxtv
 
+Troubleshooting
+---------------
+
+Some versions of vlc_ require a `--m3u-extvlcopt` option to read `.m3u` files
+options. If you need this, you can add a `.freeboxtv` in your `$HOME` and add
+this::
+
+  [default]
+  options = --m3u-extvlcopt
+
 Usage
 -----
 
