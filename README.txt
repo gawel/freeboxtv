@@ -52,7 +52,7 @@ For example::
 
   $ fbxtv nova # launch radio nova
 
-  $ fbxtv france 2 # lauch France 2
+  $ fbxtv france 2 # launch France 2
 
 Close vlc::
 
