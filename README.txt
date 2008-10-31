@@ -31,7 +31,7 @@ If you still having problems, run::
 
   $ fbxtv -d
 
-And send the traceback at `gael@gawel.org`.  
+And send the traceback at `gael at gawel dot org`.  
 
 Usage
 -----
