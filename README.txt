@@ -8,7 +8,7 @@ This package is used to wrap vlc_ and use it with the FreeboxTV_.
 Requirements
 ------------
 
-You need vlc_ >= 0.8.6f
+You need vlc_
 
 Installation
 ------------
@@ -20,12 +20,18 @@ Install freeboxtv with easy_install::
 Troubleshooting
 ---------------
 
-Some versions of vlc_ require a `--m3u-extvlcopt` option to read `.m3u` files
-options. If you need this, you can add a `.freeboxtv` in your `$HOME` and add
-this::
+Some older versions of vlc_ require a `--m3u-extvlcopt` option to read `.m3u`
+files options. If you need this, you can add a `.freeboxtv` in your `$HOME` and
+add this::
 
   [default]
   options = --m3u-extvlcopt
+
+If you still having problems, run::
+
+  $ fbxtv -d
+
+And send the traceback at `gael@gawel.org`.  
 
 Usage
 -----
