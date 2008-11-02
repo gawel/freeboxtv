@@ -7,3 +7,4 @@ Welcome to freeboxtv's documentation!
 
 .. include:: ../README.txt
 
+.. include:: ../CHANGES.txt
