@@ -76,10 +76,12 @@ def get_channels():
             data = dict(
                 name = line.split(' - ', 1)[1])
         elif 'EXT' not in line:
-            data['url'] = line
-            channels[index] = data
-            data['raw'] = raw
-            index += 1
+            name = data['name']
+            if not name.endswith(' HD') and not name.endswith('bit)'):
+                data['url'] = line
+                channels[index] = data
+                data['raw'] = raw
+                index += 1
             raw = ''
     for k, v in CONFIG.items('radios'):
         data = dict(name=k, url=v, raw='%s\n' % v)
