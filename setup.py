@@ -3,10 +3,14 @@ import sys, os
 
 version = '0.7'
 
+long_description = ''
+if os.path.isfile('README.txt'):
+    long_description=open('README.txt').read() + open('CHANGES.txt').read()
+
 setup(name='freeboxtv',
       version=version,
       description="VLC launcher for Freebox TV",
-      long_description=open('README.txt').read() + open('CHANGES.txt').read(),
+      long_description=long_description,
       classifiers=[
           'Environment :: Console',
           'License :: OSI Approved',
@@ -16,7 +20,7 @@ setup(name='freeboxtv',
       keywords='freebox',
       author='Gael Pasgrimaud',
       author_email='gael@gawel.org',
-      url='http://www.gawel.org/docs/freeboxtv',
+      url='http://www.gawel.org/docs/dist',
       license='GPL',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,

@@ -1,3 +1,4 @@
 include README.txt
 include CHANGES.txt
+include setup.py
 
