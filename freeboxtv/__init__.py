@@ -9,6 +9,49 @@ import signal
 import sys
 import os
 
+KEYS = [
+    "power",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "0",
+    "list",
+    "tv",
+    "back",
+    "swap",
+    "mute",
+    "home",
+    "rec",
+    "bwd",
+    "prev",
+    "play",
+    "fwd",
+    "next",
+    "red",
+    "green",
+    "yellow",
+    "blue",
+    "info",
+    "mail",
+    "help",
+    "pip",
+    "vol_inc",
+    "vol_dec",
+    "prgm_inc",
+    "prgm_dec",
+    "ok",
+    "stop",
+    "up",
+    "right",
+    "down",
+    "left",
+]
 
 def load_config():
     files = []
@@ -34,6 +77,11 @@ if sys.platform == 'darwin':
 else:
     COMMAND_LINE = ['vlc']
 COMMAND_LINE.extend(OPTIONS)
+
+if CONFIG.has_option('default', 'code'):
+    TV = 'http://hd1.freebox.fr/pub/remote_control?key=%s&code='+CONFIG.get('default', 'code')
+else:
+    TV = None
 
 PLAYLIST = 'http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
 TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
@@ -91,6 +139,11 @@ def get_channels():
 
 def main():
     parser = OptionParser()
+    if TV:
+        parser.add_option("-k", "--key", dest="keys",
+                                action='append',
+                                default=[],
+                                help="Keys to pass to Freebox HD: %s" % ', '.join(sorted(KEYS)))
     parser.add_option("-f", "--fullscreen", dest="fullscreen",
                             action='store_true',
                             default=False,
@@ -111,6 +164,13 @@ def main():
     if options.debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Starting in debug mode')
+
+    if options.keys:
+        for k in options.keys:
+            logging.debug(TV % k)
+            print urllib.urlopen(TV % k).read()
+        return
+
     if options.stop:
         close()
     elif options.list:
