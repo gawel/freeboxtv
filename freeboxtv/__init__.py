@@ -165,7 +165,7 @@ def main():
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Starting in debug mode')
 
-    if options.keys:
+    if getattr(options, 'keys', None):
         for k in options.keys:
             logging.debug(TV % k)
             print urllib.urlopen(TV % k).read()
