@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 from ConfigObject import ConfigObject
+import tempfile
+import sys
 import os
+
+TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
+PID = os.path.join(tempfile.gettempdir(), 'fbxtv.pid')
+
+if sys.platform == 'darwin':
+    BINARY = '/Applications/VLC.app/Contents/MacOS/VLC'
+else:
+    BINARY = 'vlc'
 
 class Config(ConfigObject):
 

@@ -14,7 +14,7 @@ from wsgiproxy.exactproxy import proxy_exact_request
 from webhelpers.paginate import Page
 from webob import Request as WebObRequest
 from freeboxtv.utils import Control, Config, config
-from freeboxtv import BINARY
+from freeboxtv.utils import BINARY, PID
 from bottle import *
 
 VIEWS = os.path.join(os.path.dirname(__file__), 'views')
@@ -62,17 +62,17 @@ class Player(object):
         else:
             args = self.args + ['--intf=dummy']
             self.process = subprocess.Popen(args, stderr=subprocess.PIPE)
-        config.run = dict(pid=self.process.pid)
+        open(PID, 'w').write(str(self.process.pid))
         config.write()
 
+    @classmethod
     def stop(self):
-        try:
-            os.kill(int(config.run.pid), signal.SIGKILL)
-        except OSError, e:
-            pass
-        except Exception, e:
-            log.exception(e)
-        self.process = None
+        if os.path.isfile(PID):
+            pid = open(PID).read()
+            try:
+                os.kill(int(pid), signal.SIGKILL)
+            except OSError:
+                pass
         config.write()
 
     def restart(self):
