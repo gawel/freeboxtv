@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+	<head>
+
+	  <vlc id="rpn" param1="m 'm' url_extract store" />
+
+		<vlc id="if" param1="m value '' strcmp 0 =" />
+			<vlc id="rpn" param1="m 100 store" />
+		<vlc id="end" />
+		<vlc id="if" param1="m value 50 <" />
+			<vlc id="rpn" param1="m 50 store" />
+		<vlc id="end" />
+		<vlc id="if" param1="m value 100 >" />
+			<vlc id="rpn" param1="m 100 store" />
+		<vlc id="end" />
+
+		<link rel="up"   href="play.html?m=<vlc id="value" param1="m value 2 -" />">
+		<link rel="down"    href="play.html?m=<vlc id="value" param1="m value 2 +" />">
+
+		<vlc id="rpn" param1="file 'file' url_extract store" />
+		<vlc id="rpn" param1="sub 'sub' url_extract store" />
+		<vlc id="rpn" param1="name 'name' url_extract store" />
+		<vlc id="rpn" param1="type 'type' url_extract store" />
+
+		<vlc id="rpn" param1="qfile '\'' file value addslashes strcat '\'' strcat store" />
+		<vlc id="rpn" param1="qsub '\'' sub value addslashes strcat '\'' strcat store" />
+		<vlc id="rpn" param1="panel '         ' name value strcat store" />
+
+		<!-- audio/video with transcoding -->
+		<vlc id="if" param1="type value 3 =" />
+			<vlc id="rpn" param1="qfile value ' :sout=#transcode:std :sout-transcode-ab=256 :sout-transcode-acodec=mpga :sout-transcode-channels=2 :sout-transcode-vb=9000 :sout-transcode-vcodec=mp2v :sout-transcode-vt=1000000 :sout-transcode-fps=25.0 :sout-ffmpeg-keyint=24 :sout-ffmpeg-interlace :no-sout-ffmpeg-interlace-me :file-caching=1000 :sout-transcode-soverlay' strcat name value playlist_add vlc_play" />
+			<meta name=panel_notify content="<vlc id="value" param1="panel value" />">
+		<vlc id="end" />
+
+		<!-- audio/video with transcoding and subtitle -->
+		<vlc id="if" param1="type value 4 =" />
+			<vlc id="rpn" param1="qfile value ' :sout=#transcode:std :sout-transcode-ab=256 :sout-transcode-acodec=mpga :sout-transcode-channels=2 :sout-transcode-vb=9000 :sout-transcode-vcodec=mp2v :sout-transcode-vt=1000000 :sout-transcode-fps=25.0 :sout-ffmpeg-keyint=24 :sout-ffmpeg-interlace :no-sout-ffmpeg-interlace-me :file-caching=1000 :sout-transcode-soverlay :sub-file=' strcat qsub value strcat name value playlist_add vlc_play" />
+			<meta name=panel_notify content="<vlc id="value" param1="panel value" />">
+		<vlc id="end" />
+
+		<!-- playlist item -->
+		<vlc id="if" param1="type value 5 =" />
+			<vlc id="rpn" param1="control 'control' url_extract store" />
+			<vlc id="rpn" param1="item 'item' url_extract store" />
+			<vlc id="rpn" param1="seek 'seek' url_extract store" />
+			<vlc id="if" param1="control value 'play'     strcmp 0 =" />
+				<vlc id="rpn" param1="item value vlc_play"     />
+				<meta name=panel_notify content="<vlc id="value" param1="panel value" />">
+			<vlc id="end" />
+			<vlc id="if" param1="control value 'stop'     strcmp 0 =" /><vlc id="rpn" param1="item value vlc_stop"     /><vlc id="end" />
+			<vlc id="if" param1="control value 'pause'    strcmp 0 =" /><vlc id="rpn" param1="item value vlc_pause"    /><vlc id="end" />
+			<vlc id="if" param1="control value 'next'     strcmp 0 =" /><vlc id="rpn" param1="item value vlc_next"     /><vlc id="end" />
+			<vlc id="if" param1="control value 'previous' strcmp 0 =" /><vlc id="rpn" param1="item value vlc_previous" /><vlc id="end" />
+			<vlc id="if" param1="control value 'seek'     strcmp 0 =" /><vlc id="rpn" param1="seek value vlc_seek"     /><vlc id="end" />
+
+		<vlc id="end" />
+
+    <meta name="disappear" content=0>
+		<flags volume_key=true>
+		<meta name="video_output_scale" content="<vlc id="value" param1="m value" />">
+    <!-- control -->
+	</head>
+	<body background="ts://127.0.0.1">
+		<vlc id="if" param1="name value '' strcmp 0 !=" />
+			<table width=600 border=0 cellpadding=8 cellspacing=0 align=center>
+				<tr>
+					<td height=30 bgcolor="#00000000">&nbsp;</td>
+				</tr>
+
+				<tr>
+					<td>
+						<table border=0 cellpadding=0 cellspacing=0>
+							<tr>
+								<td>
+									<h3><font color="#808080ff">Chargement...</font></h3>
+									<h3><vlc id="value" param1="name value htmlspecialchars" /></h3>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		<vlc id="end" />
+	</body>
+</html>

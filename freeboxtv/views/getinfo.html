@@ -1,0 +1,14 @@
+<vlc id="foreach" param1="pl" param2="playlist" />
+<vlc id="if" param1="pl.type value 'Node' strcmp" />
+<vlc id="if" param1="pl.current" />
+<vlc id="rpn" param1="current_node_index pl.index value store" />
+<vlc id="rpn" param1="current_node_name pl.name value store" />
+<vlc id="end" />
+<vlc id="end" />
+<vlc id="end" />
+{
+"name":"<vlc id="value" param1="current_node_name" />",
+"state":"<vlc id="value" param1="stream_state" />",
+"length":<vlc id="value" param1="stream_length" />,
+"time":<vlc id="value" param1="stream_time" />
+}

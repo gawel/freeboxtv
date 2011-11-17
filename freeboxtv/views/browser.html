@@ -1,0 +1,37 @@
+%include header control=control
+<hr />
+<table>
+  <tr>
+    <td width="40">&nbsp;</td>
+    %if dirnames:
+    <td bgcolor="#000000" valign="top" 
+        %if filenames:
+        width="100"
+        %end if
+        >
+      %for d in dirnames:
+        <a href="/browser.html?root={{quote(d)}}">{{basename(d)}}</a>
+        <br>
+      %end for
+    </td>
+    %end if
+    %if filenames:
+    <td bgcolor="#000000" valign="top">
+      %for f in filenames:
+        {{!f.prefix}}
+        <a href="/play.html?m=&name={{quote(f.name)}}&type={{f.type}}&file={{quote(f.file)}}&sub={{quote(f.sub)}}">{{f.name}}</a>
+        <br>
+      %end for
+    </td>
+    %end if
+    <td width="40">&nbsp;</td>
+  </tr>
+</table>
+<hr />
+    %if filenames:
+    <center>
+    {{page.pager()}}
+    </center>
+    %end if
+
+%include footer

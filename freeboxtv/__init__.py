@@ -73,9 +73,10 @@ if CONFIG.has_option('default', 'options'):
     OPTIONS = [o.strip() for o in OPTIONS.split(' ')]
 
 if sys.platform == 'darwin':
-    COMMAND_LINE = ['/Applications/VLC.app/Contents/MacOS/VLC']
+    BINARY = '/Applications/VLC.app/Contents/MacOS/VLC'
 else:
-    COMMAND_LINE = ['vlc']
+    BINARY = 'vlc'
+COMMAND_LINE = [BINARY]
 COMMAND_LINE.extend(OPTIONS)
 
 if CONFIG.has_option('default', 'code'):
@@ -156,6 +157,10 @@ def main():
                             action='store_true',
                             default=False,
                             help="stop vlc")
+    parser.add_option("-p", "--freeplayer", dest="player",
+                            action='store_true',
+                            default=False,
+                            help="run the freeplayer")
     parser.add_option("-d", "--debug", dest="debug",
                             action='store_true',
                             default=False,
@@ -164,6 +169,11 @@ def main():
     if options.debug:
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Starting in debug mode')
+
+    if options.player:
+        from freeboxtv import app
+        app.main(options, args)
+        return
 
     if getattr(options, 'keys', None):
         for k in options.keys:

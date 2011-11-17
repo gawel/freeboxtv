@@ -27,6 +27,9 @@ setup(name='freeboxtv',
       zip_safe=False,
       install_requires=[
           # -*- Extra requirements: -*-
+          'bottle',
+          'webob',
+          'webhelpers',
       ],
       entry_points="""
       # -*- Entry points: -*-
