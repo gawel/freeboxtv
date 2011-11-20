@@ -7,6 +7,21 @@ long_description = ''
 if os.path.isfile('README.txt'):
     long_description=open('README.txt').read() + open('CHANGES.txt').read()
 
+try:
+    import py2app
+except ImportError:
+    kw = {}
+else:
+    kw = dict(
+        setup_requires=[
+            'ConfigObject',
+            'wsgiproxy',
+            'restkit',
+            ],
+        app=['freeboxtv/__init__.py'],
+        )
+
+
 setup(name='freeboxtv',
       version=version,
       description="VLC launcher for Freebox TV",
@@ -36,4 +51,4 @@ setup(name='freeboxtv',
       [console_scripts]
       fbxtv = freeboxtv:main
       """,
-      )
+      **kw)

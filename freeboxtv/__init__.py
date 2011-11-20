@@ -62,4 +62,5 @@ def main():
                     tv.open_url(tv.TMP_PLAYLIST,**eval(str(options)))
                     break
 
-
+if __name__ == '__main__':
+    main()

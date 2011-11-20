@@ -12,29 +12,19 @@ if sys.platform == 'darwin':
 else:
     BINARY = 'vlc'
 
+class Params(dict):
+
+    def __getattr__(self, attr):
+        return self[attr]
+
 class Config(ConfigObject):
-
-    filename = None
-
-    def write(self, path_or_fd=None):
-        if path_or_fd is None and self._filename:
-            path_or_fd = self._filename
-        if isinstance(path_or_fd, basestring):
-            fd = open(path_or_fd, 'w')
-        else:
-            fd = path_or_fd
-        ConfigObject.write(self, fd)
-        if isinstance(path_or_fd, basestring):
-            fd.close()
 
     @classmethod
     def from_file(cls, *args, **kwargs):
         filename = os.path.expanduser(os.path.join('~/.freeboxtv', *args))
         if not os.path.isdir(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
-        config = cls(defaults=kwargs)
-        config.read(filename)
-        config._filename = filename
+        config = cls(filename=filename, defaults=kwargs)
         return config
 
 config = Config.from_file('player.ini')
@@ -74,7 +64,6 @@ class Control(dict):
 
     metas = [
         "refresh",
-        "refresh",
         "disappear",
         "nopicture",
         "channel",
@@ -107,6 +96,15 @@ class Control(dict):
         self['settings_page'] = 'settings.html'
         self['home'] = self['home_page'] = 'browser.html'
         self['title'] = self['panel_display'] = 'FBXPLAYER'
+
+        self['red'] = '/restart.html'
+        self['blue'] = '/restart.html'
+        self['green'] = '/restart.html'
+        self['yellow'] = '/keys.html'
+
+        self['mail'] = '/history.html'
+        self['info'] = '/control.html'
+
         for k, v in config.aliases.items():
             self[k] = v
 
@@ -114,15 +112,18 @@ class Control(dict):
         if attr not in self.metas + self.links:
             raise AttributeError(attr)
         if attr == 'refresh':
-            value = '0;url=%s' % value
+            if isinstance(value, tuple):
+                value = '%s;url=%s' % value
+            else:
+                value = '0;url=%s' % value
         self[attr] = value
 
-    def play(self):
-        self.stop = '/play.html?m=100&type=5&control=stop'
+    def play(self, poll=30):
+        self.stop = '/play.html?&type=5&control=stop'
         self.play = '/play.html?type=5&control=pause'
         self.pause = '/play.html?type=5&control=pause'
 
-        self.prev = '/play.html?type=5&self=seek&seek=-10min'
+        self.prev = '/play.html?type=5&control=seek&seek=1'
         self.next = '/play.html?type=5&control=seek&seek=+10min'
         self.rev = '/play.html?type=5&control=seek&seek=-1min'
         self.fwd = '/play.html?type=5&control=seek&seek=+1min'
@@ -132,7 +133,7 @@ class Control(dict):
 
         self.star_page = '/browser.html'
 
-        self['refresh'] = '10;url=/poll.html'
+        self.refresh = (poll, '/poll.html')
 
     def finalize(self):
         for k in self.links + self.metas:

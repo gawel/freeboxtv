@@ -21,7 +21,7 @@ Troubleshooting
 ---------------
 
 Some older versions of vlc_ require a `--m3u-extvlcopt` option to read `.m3u`
-files options. If you need this, you can add a `.freeboxtv` in your `$HOME` and
+files options. If you need this, you can add a `.freeboxtv/tv.ini` in your `$HOME` and
 add this::
 
   [default]
@@ -57,6 +57,10 @@ For example::
 Close vlc::
 
   $ fbxtv -s
+
+Launch freeplayer server::
+
+  $ fbxtv -p
 
 Changes
 -------

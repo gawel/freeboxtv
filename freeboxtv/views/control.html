@@ -1,0 +1,35 @@
+%include header control=control
+<table>
+  <tr>
+    <td width="40">&nbsp;</td>
+    <td bgcolor="#000000">
+      <h3>{{name}}</h3>
+      <hr />
+      &nbsp;&nbsp;
+      <form action="/control.html" method="GET">
+        <meta name="seek" content="{{pos}}" />
+        0mn <input type="hslider" name="seek" min="0" max="99" grad="2" /> {{length}}
+      </form>
+      <br />
+      &nbsp;&nbsp;
+      Scale <input type=hslider name=video_output_scale min=70 max=100 grad=2 />
+      &nbsp;&nbsp;
+      <form action="/control.html" method="GET">
+        <select name="display_scaling">
+          <option value=letterbox>Letterbox</option>
+          <option value=panscan>Pan Scan</option>
+          <option value=fullscreen>Fullscreen</option>
+        </select>
+        &nbsp;&nbsp;
+        <select name="display_aspect_ratio">
+          <option value="16/9">16/9</option>
+          <option value="4/3">4/3</option>
+          <option value="0/0">Auto</option>
+        </select>
+      </form>
+      <hr />
+    </td>
+    <td width="40">&nbsp;</td>
+  </tr>
+</table>
+%include footer

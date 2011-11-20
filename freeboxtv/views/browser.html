@@ -19,7 +19,7 @@
     <td bgcolor="#000000" valign="top">
       %for f in filenames:
         {{!f.prefix}}
-        <a href="/play.html?m=&name={{quote(f.name)}}&type={{f.type}}&file={{quote(f.file)}}&sub={{quote(f.sub)}}">{{f.name}}</a>
+        <a {{f.focused}} href="/play.html?m=&name={{quote(f.name)}}&type={{f.type}}&file={{quote(f.file)}}&sub={{quote(f.sub)}}&sdelay={{sdelay}}">{{f.name}}</a>
         <br>
       %end for
     </td>
