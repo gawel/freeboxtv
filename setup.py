@@ -24,7 +24,7 @@ else:
 
 setup(name='freeboxtv',
       version=version,
-      description="VLC launcher for Freebox TV",
+      description="VLC launcher for Freebox TV/Freeplayer",
       long_description=long_description,
       classifiers=[
           'Environment :: Console',
