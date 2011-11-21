@@ -1,0 +1,75 @@
+Freeplayer
+===========
+
+Why another player ? Homeplayer is awesome!
+--------------------------------------------
+
+I hate java. I want to keep track of already played files. I want subtitle
+delay adjustment (yeah I'm trying to improve my english...)
+
+About
+-----
+
+This player support:
+
+- memory of the latest played file
+
+- playlist history
+
+- subtitles (with delay adjustment)
+
+Start the freeplayer with the ``-p`` option::
+
+  $ fbxtv -p [directory]
+
+If no directory is provided then the freeplayer will start at the latest
+directory displayed in the browser.
+
+Go to your TV and connect it to the player via the freebox panel.
+
+File Browser Controls
+---------------------
+
+- star: back (yellow arrow on freebov V5 remote)
+
+- left / rigth: next page / previous page
+
+Play Controls
+---------------------
+
+Standard behavior for stop/pause/forward/rewind
+
+- star: back (yellow arrow on freebov V5 remote)
+
+- prev: back to the beginning of the stream
+
+- next: seek +10mn (you'd better use the info panel and use the slider)
+
+- info: control box (seek slider, subtitle delay slider)
+
+- mail: control box (scale, ratios)
+
+hm, what is the key for the history... I don't remember... Well. I doesn't
+matter. Check the customisation section and add it yourself!
+
+Customisation
+-------------
+
+The configuration is in ``~/freeboxtv/config.ini``.
+
+You can change the defaults values.
+
+You can also add an ``aliases`` section to perform some custom command::
+
+  [aliases]
+  red = /cmds/seek/+10mn
+  green = /history
+  yellow = /browser?root=/Users/pervers/Movies/.p0rn/
+
+.. warning::
+
+  freeboxtv can't filter p0rn stuff in the history
+
+You can find all available keys `here
+<https://github.com/gawel/freeboxtv/blob/master/freeboxtv/utils.py#L14>`_
+

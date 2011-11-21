@@ -1,0 +1,31 @@
+Usage
+========
+
+Get channels list::
+
+  $ fbxtv -l
+
+Launch the full playlist::
+
+  $ fbxtv
+
+Launch a channel::
+
+  $ fbxtv <channel_id|channel_name>
+
+For example::  
+
+  $ fbxtv nova # launch radio nova
+
+  $ fbxtv france 2 # launch France 2
+
+Close vlc::
+
+  $ fbxtv -s
+
+Launch freeplayer server::
+
+  $ fbxtv -p
+
+Read more about the freeplayer UI
+

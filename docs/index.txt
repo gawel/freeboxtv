@@ -7,3 +7,30 @@ Welcome to freeboxtv's documentation!
 
 .. include:: ../README.txt
 
+Requirements
+------------
+
+You need vlc_
+
+Installation
+------------
+
+Install freeboxtv with easy_install::
+
+  $ sudo easy_install -U freeboxtv
+
+Troubleshooting
+---------------
+
+If you having problems, run::
+
+  $ fbxtv -d
+
+And add an `issue <https://github.com/gawel/freeboxtv/issues>`_ (you can use french..)  
+
+.. toctree::
+   :maxdepth: 2
+
+   usage
+   freeplayer
+
