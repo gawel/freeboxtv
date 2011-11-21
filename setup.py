@@ -13,11 +13,7 @@ except ImportError:
     kw = {}
 else:
     kw = dict(
-        setup_requires=[
-            'ConfigObject',
-            'wsgiproxy',
-            'restkit',
-            ],
+        setup_requires=['py2app'],
         app=['freeboxtv/__init__.py'],
         )
 
@@ -45,6 +41,8 @@ setup(name='freeboxtv',
           'bottle',
           'webob',
           'webhelpers',
+          'ConfigObject',
+          'wsgiproxy',
       ],
       entry_points="""
       # -*- Entry points: -*-

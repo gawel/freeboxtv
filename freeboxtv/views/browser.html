@@ -1,4 +1,5 @@
 %include header control=control
+<body bgclolr="#000000">
 <hr />
 <table>
   <tr>
@@ -10,7 +11,7 @@
         %end if
         >
       %for d in dirnames:
-        <a href="/browser.html?root={{quote(d)}}">{{basename(d)}}</a>
+        <a href="/browser?root={{quote(d)}}">{{basename(d)}}</a>
         <br>
       %end for
     </td>
@@ -19,7 +20,7 @@
     <td bgcolor="#000000" valign="top">
       %for f in filenames:
         {{!f.prefix}}
-        <a {{f.focused}} href="/play.html?m=&name={{quote(f.name)}}&type={{f.type}}&file={{quote(f.file)}}&sub={{quote(f.sub)}}&sdelay={{sdelay}}">{{f.name}}</a>
+        <a {{f.focused}} href="/play/{{quote(f.name)}}">{{f.name}}</a>
         <br>
       %end for
     </td>
@@ -33,5 +34,5 @@
     {{page.pager()}}
     </center>
     %end if
-
+</body>
 %include footer

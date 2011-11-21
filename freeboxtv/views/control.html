@@ -1,4 +1,5 @@
 %include header control=control
+<body background="ts://127.0.0.1">
 <table>
   <tr>
     <td width="40">&nbsp;</td>
@@ -6,15 +7,13 @@
       <h3>{{name}}</h3>
       <hr />
       &nbsp;&nbsp;
-      <form action="/control.html" method="GET">
+      <form action="/control" method="GET">
         <meta name="seek" content="{{pos}}" />
         0mn <input type="hslider" name="seek" min="0" max="99" grad="2" /> {{length}}
       </form>
       <br />
       &nbsp;&nbsp;
-      Scale <input type=hslider name=video_output_scale min=70 max=100 grad=2 />
-      &nbsp;&nbsp;
-      <form action="/control.html" method="GET">
+      <form action="/control" method="GET">
         <select name="display_scaling">
           <option value=letterbox>Letterbox</option>
           <option value=panscan>Pan Scan</option>
@@ -27,6 +26,8 @@
           <option value="0/0">Auto</option>
         </select>
       </form>
+      &nbsp;&nbsp;
+      Scale <input type="hslider" name="video_output_scale" min="70" max="100" grad="2" />
       <hr />
     </td>
     <td width="40">&nbsp;</td>

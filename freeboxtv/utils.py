@@ -4,14 +4,6 @@ import tempfile
 import sys
 import os
 
-TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
-PID = os.path.join(tempfile.gettempdir(), 'fbxtv.pid')
-
-if sys.platform == 'darwin':
-    BINARY = '/Applications/VLC.app/Contents/MacOS/VLC'
-else:
-    BINARY = 'vlc'
-
 class Params(dict):
 
     def __getattr__(self, attr):
@@ -94,16 +86,13 @@ class Control(dict):
         self['ttx_subtitle_page'] = "889"
 
         self['settings_page'] = 'settings.html'
-        self['home'] = self['home_page'] = 'browser.html'
+        self['home'] = self['home_page'] = 'browser'
         self['title'] = self['panel_display'] = 'FBXPLAYER'
 
-        self['red'] = '/restart.html'
-        self['blue'] = '/restart.html'
-        self['green'] = '/restart.html'
-        self['yellow'] = '/keys.html'
+        self['yellow'] = '/keys'
 
-        self['mail'] = '/history.html'
-        self['info'] = '/control.html'
+        self['mail'] = '/history'
+        self['info'] = '/control'
 
         for k, v in config.aliases.items():
             self[k] = v
@@ -119,26 +108,26 @@ class Control(dict):
         self[attr] = value
 
     def play(self, poll=30):
-        self.stop = '/play.html?&type=5&control=stop'
-        self.play = '/play.html?type=5&control=pause'
-        self.pause = '/play.html?type=5&control=pause'
+        self.stop = '/cmds/stop'
+        self.play = '/cmds/pause'
+        self.pause = '/cmds/pause'
 
-        self.prev = '/play.html?type=5&control=seek&seek=1'
-        self.next = '/play.html?type=5&control=seek&seek=+10min'
-        self.rev = '/play.html?type=5&control=seek&seek=-1min'
-        self.fwd = '/play.html?type=5&control=seek&seek=+1min'
+        self.prev = '/cmds/seek/1'
+        self.next = '/cmds/seek/+10min'
+        self.rev = '/cmds/seek/-1min'
+        self.fwd = '/cmds/seek/+1min'
 
         self.display_scaling = 'letterbox'
         self.display_aspect_ratio = '4/3'
 
-        self.star_page = '/browser.html'
+        self.star_page = '/browser'
 
-        self.refresh = (poll, '/poll.html')
+        self.refresh = (poll, '/poll')
 
     def finalize(self):
         for k in self.links + self.metas:
             if k not in self and k not in ('refresh',):
-                self[k] = '/keys.html?key=%s' % k
+                self[k] = '/keys?key=%s' % k
 
     def render(self):
         metas = []

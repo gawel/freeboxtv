@@ -1,0 +1,10 @@
+%include header control=control
+<body background="ts://127.0.0.1">
+%if cmd == 'play':
+  <vlc id="rpn" param1="playlist_empty" />
+  <vlc id="rpn" param1="{{!command}} playlist_add vlc_play" />
+%else:
+  <vlc id="rpn" param1="'{{!command}}' vlc_{{cmd}}" />
+%end if
+%include footer
+
