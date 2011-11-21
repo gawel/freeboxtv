@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.9'
+version = '0.9.1'
 
 long_description = ''
 if os.path.isfile('README.txt'):
