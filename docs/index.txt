@@ -15,6 +15,8 @@ You need vlc_
 Installation
 ------------
 
+Do not expect it to run on windows. I you need this, patch it yourself.
+
 Install freeboxtv with easy_install::
 
   $ sudo easy_install -U freeboxtv
