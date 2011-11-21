@@ -6,14 +6,25 @@
     <td bgcolor="#000000">
       <h3>{{name}}</h3>
       <hr />
-      &nbsp;&nbsp;
-      <form action="/control" method="GET">
-        <meta name="seek" content="{{pos}}" />
-        0mn <input type="hslider" name="seek" min="0" max="99" grad="2" /> {{length}}
-      </form>
-      <br />
-      &nbsp;&nbsp;
-      <form action="/control" method="GET">
+      %if type == 'info':
+        &nbsp;&nbsp;
+        <form action="/control/{{type}}" method="GET">
+          <meta name="seek" content="{{pos}}" />
+          0mn <input type="hslider" name="seek" min="0" max="99" grad="2" /> {{length}}
+        </form>
+        <br />
+        <form action="/control/{{type}}" method="GET">
+          Subtitle delay
+          (<var name="sub_delay" content="{{sub_delay}}" width="25" />&nbsp;)
+          <input type="hslider" name="sub_delay" min="-99" max="99" grad="5" />
+        </form>
+      %end if
+      %if type == 'mail':
+        <hr />
+      %end if
+      %if type == 'help':
+        Scale <input type="hslider" name="video_output_scale" min="70" max="100" grad="2" />
+        <br />
         <select name="display_scaling">
           <option value=letterbox>Letterbox</option>
           <option value=panscan>Pan Scan</option>
@@ -25,9 +36,7 @@
           <option value="4/3">4/3</option>
           <option value="0/0">Auto</option>
         </select>
-      </form>
-      &nbsp;&nbsp;
-      Scale <input type="hslider" name="video_output_scale" min="70" max="100" grad="2" />
+      %end if
       <hr />
     </td>
     <td width="40">&nbsp;</td>

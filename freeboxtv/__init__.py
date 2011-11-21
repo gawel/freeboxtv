@@ -37,6 +37,8 @@ def main():
     options, args = parser.parse_args()
     if options.debug:
         player.debug = True
+        if len(args) == 1 and os.path.isdir(args[0]):
+            player.params.location = os.path.abspath(args[0])
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Starting in debug mode')
 

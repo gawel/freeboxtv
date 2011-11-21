@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ConfigObject import ConfigObject
+from freeboxtv import config
 import tempfile
 import sys
 import os
@@ -8,18 +8,6 @@ class Params(dict):
 
     def __getattr__(self, attr):
         return self[attr]
-
-class Config(ConfigObject):
-
-    @classmethod
-    def from_file(cls, *args, **kwargs):
-        filename = os.path.expanduser(os.path.join('~/.freeboxtv', *args))
-        if not os.path.isdir(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
-        config = cls(filename=filename, defaults=kwargs)
-        return config
-
-config = Config.from_file('player.ini')
 
 class Control(dict):
 
@@ -91,8 +79,9 @@ class Control(dict):
 
         self['yellow'] = '/keys'
 
-        self['mail'] = '/history'
-        self['info'] = '/control'
+        self['info'] = '/control/info'
+        self['mail'] = '/control/mail'
+        self['help'] = '/control/help'
 
         for k, v in config.aliases.items():
             self[k] = v
@@ -122,7 +111,8 @@ class Control(dict):
 
         self.star_page = '/browser'
 
-        self.refresh = (poll, '/poll')
+        if poll is not None:
+            self.refresh = (poll, '/poll')
 
     def finalize(self):
         for k in self.links + self.metas:

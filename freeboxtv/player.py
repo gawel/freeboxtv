@@ -10,7 +10,8 @@ import logging as log
 from hashlib import md5
 from freeboxtv import config
 from webob import Request
-from freeboxtv.utils import Config, Params, Control
+from ConfigObject import ConfigObject
+from freeboxtv.utils import Params, Control
 from wsgiproxy.exactproxy import proxy_exact_request
 import bottle
 
@@ -26,20 +27,21 @@ class Media(object):
     def __init__(self, filename=None, name=None):
         if name is None:
             name, _ = os.path.splitext(os.path.basename(filename))
-            self.config = Config.from_file('data', md5(name).hexdigest())
-            self.data = data = self.config.data
+        h = md5(name).hexdigest()
+        data = os.path.expanduser(os.path.join('~/.freeboxtv', 'data',
+                                        h[:2], h[2:4], h[4:6], h))
+        if not os.path.isdir(os.path.dirname(data)):
+            os.makedirs(os.path.dirname(data))
+        self.config = ConfigObject(filename=data)
+        self.data = data = self.config.data
+        self.write = self.config.write
+        if not self.file and filename:
             data.name = name
             data.file = filename
-            self.config.write()
-        else:
-            self.config = Config.from_file('data', md5(name).hexdigest())
-            self.data = self.config.data
+            self.write()
 
     def __getattr__(self, attr):
         return self.data[attr]
-
-    def write(self):
-        self.config.write()
 
     @property
     def focused(self):
@@ -58,10 +60,8 @@ class Media(object):
             return '-->'
         if self.times:
             times = self.times.as_int()
-            times = times * 2
-            if times > 6:
-                times = 6
-            return '*'*times
+            if times:
+                return '*'
         return ''
 
     def play(self):
@@ -81,8 +81,15 @@ class Media(object):
          def escape(f):
              f = f.replace("'", r"\'")
              return f
+         try:
+             delay = self.sub_delay.as_int()
+         except:
+             pass
+         else:
+             if delay != 0:
+                 cmd += ':sub-delay=%s ' % delay
          if self.sub:
-             cmd += ':sub-file=%s ' % escape(self.sub)
+             cmd += ':no-sub-autodetect-file :sub-file=%s ' % escape(self.sub)
          player.call('play', "'%s %s' '%s'" % (escape(self.file), cmd, self.name),
                      media=self)
          if self.time and self.time.as_int():
@@ -113,6 +120,7 @@ class Player(object):
             '--sout-transcode-maxwidth=720',
             '--sout-transcode-maxheight=576',
             '--no-playlist-autostart',
+            '--no-sub-autodetect-file',
             ]
 
     http_args = [
@@ -139,6 +147,7 @@ class Player(object):
             silent = False
         else:
             args = self.player_args
+            silent = True
         args = self.http_args + args
         if self.debug:
             stderr = sys.stderr

@@ -1,38 +1,29 @@
 %include header control=control
 <body bgclolr="#000000">
-<hr />
 <table>
   <tr>
     <td width="40">&nbsp;</td>
-    %if dirnames:
-    <td bgcolor="#000000" valign="top" 
-        %if filenames:
-        width="100"
-        %end if
-        >
-      %for d in dirnames:
-        <a href="/browser?root={{quote(d)}}">{{basename(d)}}</a>
-        <br>
-      %end for
-    </td>
-    %end if
-    %if filenames:
     <td bgcolor="#000000" valign="top">
+      <hr />
       %for f in filenames:
-        {{!f.prefix}}
-        <a {{f.focused}} href="/play/{{quote(f.name)}}">{{f.name}}</a>
+        %if f.is_directory:
+          <a href="/browser?root={{quote(f.file)}}">&nbsp;<font size="4" color="#cccccc">
+            {{f.name}}</font><font size="4" color="#00FFFF">/</font></a>
+        %else:
+          {{!f.prefix}}
+          <a {{f.focused}} href="/play/{{quote(f.name)}}">&nbsp;<font color="#ffffff">{{f.name}}</font></a>
+        %end if
         <br>
       %end for
+      <hr />
+      %if filenames:
+      <center>
+      {{page.pager()}}
+      </center>
+      %end if
     </td>
-    %end if
     <td width="40">&nbsp;</td>
   </tr>
 </table>
-<hr />
-    %if filenames:
-    <center>
-    {{page.pager()}}
-    </center>
-    %end if
 </body>
 %include footer

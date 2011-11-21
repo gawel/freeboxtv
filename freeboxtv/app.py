@@ -7,6 +7,7 @@ import urllib
 import signal
 import logging as log
 from glob import glob
+from time import sleep
 from webhelpers.paginate import Page
 from freeboxtv.utils import Control, Params
 from freeboxtv.player import Media
@@ -18,12 +19,17 @@ exts = ['.mp4', '.avi']
 
 app = Bottle()
 
+class Dir(object):
+    def __init__(self, directory):
+        self.file = directory
+        self.name = os.path.basename(directory)
+        self.is_directory = True
 
 def batch(control, filenames, path_info='/browser'):
     i = 1
     if player.params.latest in filenames:
         i = filenames.index(player.params.latest)
-        i = len(filenames)/20
+        i = (i / 20) + 1
     def url(page=1):
         return  '%s?page=%s' % (request.environ['PATH_INFO'], page)
     page = Page(filenames, page=int(request.GET.get('page', i)), url=url)
@@ -48,10 +54,7 @@ def index():
     quote = urllib.quote
     basename = os.path.basename
 
-    if player.params.latest:
-        root = request.GET.get('root', os.path.dirname(player.params.latest))
-    else:
-        root = request.GET.get('root', player.params.location)
+    root = request.GET.get('root', player.params.location)
     root = os.path.realpath(root)
     player.params.location = root
 
@@ -59,14 +62,20 @@ def index():
     filenames = []
     for root, dirnames, filenames in os.walk(root):
         break
-    dirnames = [os.path.join(root, d) for d in dirnames if not d.startswith('.')]
+    dirnames = [os.path.join(root, d) for d in dirnames \
+                    if not d.startswith('.')]
     filenames = [os.path.join(root, d) for d in sorted(filenames) \
             if not d.startswith('.') and d.lower()[-4:] in exts]
 
     control=Control()
     control.star_page = '/browser?root=%s' % quote(os.path.dirname(root))
-    page = batch(control, filenames)
-    filenames = [Media(f) for f in page.items]
+    page = batch(control, dirnames+filenames)
+    filenames = []
+    for p in page.items:
+        if os.path.isdir(p):
+            filenames.append(Dir(p))
+        else:
+            filenames.append(Media(p))
 
     return locals()
 
@@ -84,29 +93,41 @@ def history():
     return locals()
 
 
-@app.route('/control')
+@app.route('/control/:type')
 @view('control')
-def control():
+def control(type='info'):
+    control=Control()
+    control.play(poll=None)
+    for k in ('star', type):
+        control[k] = '/poll'
+
     infos = player.infos
     name = infos.name
     if name == 'current_node_name':
         return index()
-    length = infos.length
-    if 'seek' in request.GET:
+    if type == 'info':
+        media = Media(name=name)
+        length = infos.length
+        if 'seek' in request.GET:
+            if length:
+                pos = int(float(request.GET['seek'])*length/100)
+                player.call('seek', str(pos))
+                infos = player.infos
         if length:
-            pos = int(float(request.GET['seek'])*length/100)
-            player.call('seek', str(pos))
-            infos = player.infos
-    if length:
-        time = infos.time
-        pos = int(float(time)/length*100)
-    else:
-        pos = 0
-    length = '%smn' % (length/60)
-    poll(auto=False)
-    control=Control()
-    control.star = '/poll'
-    control.info = '/poll'
+            time = infos.time
+            pos = int(float(time)/length*100)
+        else:
+            pos = 0
+        length = '%smn' % (length/60)
+        if 'sub_delay' in request.GET:
+            sub_delay = request.GET['sub_delay']
+            if sub_delay != (media.sub_delay or '0'):
+                time = infos.time > 100 and infos.time or 0
+                media.data.update(infos, sub_delay=sub_delay, time=time)
+                media.write()
+                control.refresh = '/play/%s' % media.name
+        else:
+            sub_delay = media.sub_delay or '0'
     return locals()
 
 
@@ -114,6 +135,7 @@ def control():
 @view('settings')
 def poll(auto=True):
     control=Control()
+    control.play()
     infos = player.infos
     name = infos.name
     if name and name != 'current_node_name':
@@ -172,7 +194,10 @@ def play(name):
             config.write()
         seek = media.play()
         if seek:
-            control.refresh = (3, '/cmds/seek/%s' % seek)
+            for i in range(20):
+                if not player.infos:
+                    sleep(.2)
+            control.refresh = (0, '/cmds/seek/%s' % seek)
         return locals()
     return index()
 
