@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from freeboxtv import config
-import tempfile
-import sys
-import os
+
 
 class Params(dict):
 
     def __getattr__(self, attr):
         return self[attr]
 
+
 class Control(dict):
 
     links = [
         "home",
+        "index",
+        "guide",
         "love",
         "love2",
         "mail",
@@ -40,6 +41,7 @@ class Control(dict):
         "next",
         "rev",
         "fwd",
+        "pip",
     ]
 
     metas = [
@@ -82,9 +84,17 @@ class Control(dict):
         self['info'] = '/control/info'
         self['mail'] = '/control/mail'
         self['help'] = '/control/help'
+        self['rec'] = '/browser/mark_as_read'
+
+        self['star'] = '/browser'
 
         for k, v in config.aliases.items():
             self[k] = v
+
+        for k in self.links:
+            if k not in self and k not in ('refresh', 'up', 'down',
+                                           'left', 'right'):
+                self[k] = '/poll'
 
     def __setattr__(self, attr, value):
         if attr not in self.metas + self.links:
@@ -115,7 +125,7 @@ class Control(dict):
             self.refresh = (poll, '/poll')
 
     def finalize(self):
-        for k in self.links + self.metas:
+        for k in self.links:
             if k not in self and k not in ('refresh',):
                 self[k] = '/keys?key=%s' % k
 
@@ -125,10 +135,12 @@ class Control(dict):
         links.append('<title>%s</title>' % self.pop('title'))
         for k, v in self.items():
             if v.startswith('/') and k in self.links:
-                links.append('<link rel="%s" href="http://212.27.38.254:8080%s">' % (k, v))
+                links.append(
+                 '<link rel="%s" href="http://212.27.38.254:8080%s">' % (k, v))
             elif v.startswith('/'):
-                links.append('<meta name="%s" content="http://212.27.38.254:8080%s">' % (k, v))
+                links.append(('<meta name="%s" '
+                              'content="http://212.27.38.254:8080%s">'
+                             ) % (k, v))
             else:
                 metas.append('<meta name="%s" content="%s">' % (k, v))
-        return '\n'.join(links+['<services></services>']+metas)
-
+        return '\n'.join(links + ['<services></services>'] + metas)

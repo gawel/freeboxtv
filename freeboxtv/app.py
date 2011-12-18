@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
-import json
-import bottle
 import urllib
-import signal
 import logging as log
-from glob import glob
 from time import sleep
 from webhelpers.paginate import Page
-from freeboxtv.utils import Control, Params
+from freeboxtv.utils import Control
 from freeboxtv.player import Media
 from freeboxtv.player import player
 from freeboxtv import config
-from bottle import *
+from bottle import Bottle
+from bottle import request
+from bottle import debug
+from bottle import view
 
-exts = ['.mp4', '.avi']
+exts = ['.mp4', '.avi', '.mkv']
 
 app = Bottle()
+
 
 class Dir(object):
     def __init__(self, directory):
@@ -25,38 +24,58 @@ class Dir(object):
         self.name = os.path.basename(directory)
         self.is_directory = True
 
+    @property
+    def html(self):
+        name = self.name
+        file = self.file
+        if file in config.lists.favorites.as_list('\n'):
+            color = 'ffcccc'
+        else:
+            color = 'cccccc'
+        return ('<a href="/browser?root=%(file)s">'
+                '&nbsp;<font size="4" color="#%(color)s">'
+                '%(name)s</font><font size="4"'
+                'color="#00FFFF">/</font></a>'
+                ) % dict(name=name, color=color, file=file)
+
+
 def batch(control, filenames, path_info='/browser'):
     i = 1
     if player.params.latest in filenames:
         i = filenames.index(player.params.latest)
         i = (i / 20) + 1
+
     def url(page=1):
         return  '%s?page=%s' % (request.environ['PATH_INFO'], page)
+
     page = Page(filenames, page=int(request.GET.get('page', i)), url=url)
-    control.left = '%s?page=%s' % (path_info, page.page-1 or 1,)
-    control.right = '%s?page=%s' % (path_info, page.page+1,)
+    control.left = '%s?page=%s' % (path_info, page.page - 1 or 1,)
+    control.right = '%s?page=%s' % (path_info, page.page + 1,)
     return page
 
 
 @app.route('/keys')
 @view('settings')
 def keys():
-    control=Control()
+    control = Control()
     control.star = '/browser'
     control.finalize()
     return locals()
 
 
 @app.route('/settings.html')
+@app.route('/browser/:action')
 @app.route('/browser')
 @view('browser')
-def index():
+def index(action=None):
     quote = urllib.quote
     basename = os.path.basename
 
     root = request.GET.get('root', player.params.location)
     root = os.path.realpath(root)
     player.params.location = root
+    title = '%s/' % os.path.basename(root)
+    msg = ''
 
     dirnames = []
     filenames = []
@@ -67,36 +86,69 @@ def index():
     filenames = [os.path.join(root, d) for d in sorted(filenames) \
             if not d.startswith('.') and d.lower()[-4:] in exts]
 
-    control=Control()
-    control.star_page = '/browser?root=%s' % quote(os.path.dirname(root))
-    page = batch(control, dirnames+filenames)
+    if action == 'favorite':
+        items = config.lists.favorites.as_list('\n')
+        name = os.path.basename(root)
+        if root not in items:
+            items.append(root)
+            msg = '%s added to favorites' % name
+        else:
+            items = [i for i in items if i != root]
+            msg = '%s removed from favorites' % name
+        config.lists.favorites = items
+        config.write()
+
+    if action == 'mark_as_unread':
+        for f in filenames:
+            m = Media(filename=f)
+            m.data.update(times=0, time=0)
+            m.write()
+
+    if action == 'mark_as_read':
+        infos = player.infos
+        if infos.state == 'playing':
+            player.call('stop')
+            m = Media(filename=player.params.latest)
+            m.data.update(times=1, time=0)
+            m.write()
+
+    control = Control()
+    control.star = '/browser?root=%s' % quote(os.path.dirname(root))
+    control.rec = '/browser/mark_as_unread'
+    control.red = '/browser/favorite'
+    control.pip = '/lists/favorites'
+    page = batch(control, dirnames + filenames)
     filenames = []
     for p in page.items:
         if os.path.isdir(p):
             filenames.append(Dir(p))
-        else:
+        elif os.path.isfile(p):
             filenames.append(Media(p))
+    return dict(locals(), title=title, msg=msg, basename=basename)
 
-    return locals()
 
-
-@app.route('/history')
+@app.route('/lists/:type')
 @view('browser')
-def history():
-    control=Control()
-    control.star_page = '/browser'
-    history = config.history.filenames.as_list('\n')
-    page = batch(control, list(reversed(history)), path_info='/history')
-    filenames = [Media(f) for f in page.items]
-    dirnames = []
-    quote = urllib.quote
-    return locals()
+def lists(type):
+    msg = ''
+    title = type.title()
+    control = Control()
+    control.star = '/browser'
+    items = config.lists[type].as_list('\n')
+    page = batch(control, list(reversed(items)), path_info='/lists/%s' % type)
+    filenames = []
+    for i in page.items:
+        if os.path.isdir(i):
+            filenames.append(Dir(i))
+        elif os.path.isfile(i):
+            filenames.append(Media(filename=i))
+    return dict(locals(), title=title, msg=msg)
 
 
 @app.route('/control/:type')
 @view('control')
 def control(type='info'):
-    control=Control()
+    control = Control()
     control.play(poll=None)
     for k in ('star', type):
         control[k] = '/poll'
@@ -110,15 +162,15 @@ def control(type='info'):
         length = infos.length
         if 'seek' in request.GET:
             if length:
-                pos = int(float(request.GET['seek'])*length/100)
+                pos = int(float(request.GET['seek']) * length / 100)
                 player.call('seek', str(pos))
                 infos = player.infos
         if length:
             time = infos.time
-            pos = int(float(time)/length*100)
+            pos = int(float(time) / length * 100)
         else:
             pos = 0
-        length = '%smn' % (length/60)
+        length = '%smn' % (length / 60)
         if 'sub_delay' in request.GET:
             sub_delay = request.GET['sub_delay']
             if sub_delay != (media.sub_delay or '0'):
@@ -134,7 +186,7 @@ def control(type='info'):
 @app.route('/poll')
 @view('settings')
 def poll(auto=True):
-    control=Control()
+    control = Control()
     control.play()
     infos = player.infos
     name = infos.name
@@ -182,12 +234,13 @@ def call(cmd, arg=None):
 def play(name):
     media = Media(name=name)
     if media.file and os.path.isfile(media.file):
-        control=Control()
+        control = Control()
         control.play(poll=2)
         filename = media.file
         player.params.location = os.path.dirname(filename)
         player.params.latest = filename
-        history = config.history.filenames.as_list('\n')[-player.params.history_length.as_int():]
+        history = config.history.filenames.as_list('\n')
+        history = history[-player.params.history_length.as_int():]
         if filename not in history:
             history.append(filename)
             config.history.filenames = history
@@ -226,4 +279,3 @@ def main():
         player.stop()
     except socket.error, e:
         print e
-

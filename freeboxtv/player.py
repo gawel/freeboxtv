@@ -22,6 +22,7 @@ else:
 
 bottle.TEMPLATE_PATH = [os.path.join(os.path.dirname(__file__), 'views')]
 
+
 class Media(object):
 
     def __init__(self, filename=None, name=None):
@@ -65,35 +66,45 @@ class Media(object):
         return ''
 
     def play(self):
-         cmd = (' :sout=#transcode:std '
-                ':sout-transcode-ab=256 '
-                ':sout-transcode-acodec=mpga '
-                ':sout-transcode-channels=2 '
-                ':sout-transcode-vb=9000 '
-                ':sout-transcode-vcodec=mp2v '
-                ':sout-transcode-vt=1000000 '
-                ':sout-transcode-fps=25.0 '
-                ':sout-ffmpeg-keyint=24 '
-                ':sout-ffmpeg-interlace '
-                ':no-sout-ffmpeg-interlace-me '
-                ':file-caching=2000 '
-                ':sout-transcode-soverlay ')
-         def escape(f):
-             f = f.replace("'", r"\'")
-             return f
-         try:
-             delay = self.sub_delay.as_int()
-         except:
-             pass
-         else:
-             if delay != 0:
-                 cmd += ':sub-delay=%s ' % delay
-         if self.sub:
-             cmd += ':no-sub-autodetect-file :sub-file=%s ' % escape(self.sub)
-         player.call('play', "'%s %s' '%s'" % (escape(self.file), cmd, self.name),
-                     media=self)
-         if self.time and self.time.as_int():
-             return self.time.as_int()
+        cmd = (' :sout=#transcode:std '
+               ':sout-transcode-ab=256 '
+               ':sout-transcode-acodec=mpga '
+               ':sout-transcode-channels=2 '
+               ':sout-transcode-vb=9000 '
+               ':sout-transcode-vcodec=mp2v '
+               ':sout-transcode-vt=1000000 '
+               ':sout-transcode-fps=25.0 '
+               ':sout-ffmpeg-keyint=24 '
+               ':sout-ffmpeg-interlace '
+               ':no-sout-ffmpeg-interlace-me '
+               ':file-caching=2000 '
+               ':sout-transcode-soverlay ')
+
+        def escape(f):
+            f = f.replace("'", r"\'")
+            return f
+
+        try:
+            delay = self.sub_delay.as_int()
+        except:
+            pass
+        else:
+            if delay != 0:
+                cmd += ':sub-delay=%s ' % delay
+        if self.sub:
+            cmd += ':no-sub-autodetect-file :sub-file=%s ' % escape(self.sub)
+        player.call('play', "'%s %s' '%s'" % (
+                                    escape(self.file), cmd, self.name),
+                    media=self)
+        if self.time and self.time.as_int():
+            return self.time.as_int()
+
+    @property
+    def html(self):
+        return ('%(prefix)s<a %(focused)s href="/play/%(qname)s">'
+                '&nbsp;<font color="#ffffff">%(name)s</font></a>'
+               ) % dict(prefix=self.prefix, focused=self.focused,
+                        name=self.name, qname=urllib.quote(self.name))
 
     def __repr__(self):
         data = dict(self.data, prefix=self.prefix,
@@ -134,6 +145,8 @@ class Player(object):
     def __init__(self):
         if not os.path.isdir(self.views):
             os.makedirs(self.views)
+            with open(os.path.join(self.views, 'tmp.html'), 'w') as fd:
+                fd.write('<html></html>')
         self.params = config.player
         self.debug = self.params.debug or False
         if 'location' not in self.params:
@@ -153,7 +166,7 @@ class Player(object):
             stderr = sys.stderr
         else:
             if silent:
-                args.insert(0 ,'--intf=dummy')
+                args.insert(0, '--intf=dummy')
             stderr = open('/dev/null', 'w')
         args.insert(0, BINARY)
         log.debug('Command: %s', ' '.join(args))
@@ -186,7 +199,7 @@ class Player(object):
         with open(filename, 'w') as fd:
             fd.write(tmpl)
         log.debug(tmpl)
-        return self.get_response('/'+page)
+        return self.get_response('/' + page)
 
     def get_response(self, path_info):
         req = Request.blank(path_info)
@@ -217,7 +230,7 @@ class Player(object):
             line = line.strip()
             if 'EXTINF' in line:
                 data = dict(
-                    name = line.split(' - ', 1)[1])
+                    name=line.split(' - ', 1)[1])
             elif 'EXT' not in line:
                 name = data['name']
                 if not name.endswith(' HD') and not name.endswith('bit)'):
@@ -233,4 +246,3 @@ class Player(object):
         return channels
 
 player = Player()
-

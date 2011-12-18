@@ -1,29 +1,37 @@
 %include header control=control
-<body bgclolr="#000000">
+%if msg:
+<meta name="refresh" content="1;url=/browser"  />
 <table>
   <tr>
     <td width="40">&nbsp;</td>
     <td bgcolor="#000000" valign="top">
+      <h2>{{msg}}</h2>
       <hr />
-      %for f in filenames:
-        %if f.is_directory:
-          <a href="/browser?root={{quote(f.file)}}">&nbsp;<font size="4" color="#cccccc">
-            {{f.name}}</font><font size="4" color="#00FFFF">/</font></a>
-        %else:
-          {{!f.prefix}}
-          <a {{f.focused}} href="/play/{{quote(f.name)}}">&nbsp;<font color="#ffffff">{{f.name}}</font></a>
-        %end if
+    </td>
+    <td width="40">&nbsp;</td>
+  </tr>
+</table>
+%else:
+<table>
+  <tr>
+    <td width="40">&nbsp;</td>
+    <td bgcolor="#000000" valign="top">
+      <h2>{{title}}</h2>
+      <hr />
+      %for i in filenames:
+        {{!i.html}}
         <br>
       %end for
       <hr />
-      %if filenames:
-      <center>
-      {{page.pager()}}
-      </center>
+      %if page.page_count > 1:
+        <center>
+        {{page.pager()}}
+        </center>
+        <hr />
       %end if
     </td>
     <td width="40">&nbsp;</td>
   </tr>
 </table>
-</body>
+%end if
 %include footer

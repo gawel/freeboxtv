@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from ConfigParser import ConfigParser
 from optparse import OptionParser
 from freeboxtv.player import player
 import logging
@@ -7,6 +6,7 @@ import tempfile
 import os
 
 TMP_PLAYLIST = os.path.join(tempfile.gettempdir(), 'fbxtv.m3u')
+
 
 def main():
     parser = OptionParser()
@@ -51,10 +51,10 @@ def main():
         player.stop()
     elif options.info:
         infos = player.infos
-        print('Chan:\t'+infos.name)
-        print('State:\t'+infos.state)
+        print('Chan:\t' + infos.name)
+        print('State:\t' + infos.state)
         if infos.length:
-            print('Pos:\t%smn/%smn'+(time/60, length/60))
+            print('Pos:\t%smn/%smn' + (infos.time / 60, infos.length / 60))
         print(infos)
     elif options.list:
         channels = player.channels
@@ -69,7 +69,7 @@ def main():
         if arg.isdigit() and int(arg) in channels:
             open(TMP_PLAYLIST, 'w').write(
                 channels.get(int(arg)).get('raw'))
-            player.open_url(TMP_PLAYLIST,**eval(str(options)))
+            player.open_url(TMP_PLAYLIST, **eval(str(options)))
         else:
             arg = arg.lower()
             for k, v in channels.items():
